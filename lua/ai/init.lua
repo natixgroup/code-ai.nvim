@@ -276,6 +276,10 @@ vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
   callback = M.close,
 })
 
-vim.api.nvim_create_user_command('AIListScannedFiles', M.listScannedFiles(), {})
+vim.api.nvim_create_user_command(
+  'AIListScannedFiles',
+  function() M.handle('listScannedFiles', M.listScannedFiles()) end,
+  {}
+)
 
 return M
