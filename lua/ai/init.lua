@@ -185,9 +185,9 @@ end
 
 function M.listScannedFiles()
   local analyzed_files_as_array = M.listFilesFromConfig()
-  local analyzed_files_as_string = "\n\nThis is the list of analyzed files (list not part of the prompt)\n"
+  local analyzed_files_as_string = "\n\n# This is the list of analyzed files (list not part of the prompt)\n"
   for _, file in ipairs(analyzed_files_as_array) do
-    analyzed_files_as_string = analyzed_files_as_string .. file .. "\n"
+    analyzed_files_as_string = analyzed_files_as_string .. "- " .. file .. "\n"
   end
   return analyzed_files_as_string
 end
