@@ -14,8 +14,7 @@ Here is a demo:
 
 ## Installation
 
-First get API keys from [Google Cloud](https://cloud.google.com/gemini/docs/quickstart) and [ChatGPT](https://platform.openai.com/docs/guides/chatgpt) and set them in your environment:
-
+First get API keys from [Google Cloud](https://ai.google.dev/gemini-api/docs/api-key) and [ChatGPT](https://platform.openai.com/api-keys) and set them in your environment:
 
 Using Lazy.nvim:
 
@@ -40,7 +39,7 @@ Using Lazy.nvim:
             loading_tpl = 'Loading...',
             require_input = true,
         },
-},
+    },
   },
   event = 'VimEnter',
 },
