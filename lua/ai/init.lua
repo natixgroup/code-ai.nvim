@@ -141,7 +141,6 @@ end
 
 function M.createPopup(initialContent, width, height)
   M.close()
-
   local bufnr = vim.api.nvim_create_buf(false, true)
 
   local update = function(content)
@@ -183,6 +182,16 @@ function M.fill(tpl, args)
   return tpl
 end
 
+
+function M.listScannedFiles()
+  local analyzed_files_as_array = M.listFilesFromConfig()
+  local analyzed_files_as_string = "\n\nThis is the list of analyzed files (list not part of the prompt)\n"
+  for _, file in ipairs(analyzed_files_as_array) do
+    analyzed_files_as_string = analyzed_files_as_string .. file .. "\n"
+  end
+  return analyzed_files_as_string
+end
+
 function M.handle(name, input)
   local def = M.prompts[name]
   local width = vim.fn.winwidth(0)
@@ -194,12 +203,7 @@ function M.handle(name, input)
     input_encoded = vim.fn.json_encode(input),
   }
 
-  local list_of_analyzed_files = M.listFilesFromConfig()
-  local list_of_analyzed_files_str = "\n\nThis is the list of analyzed files (list not part of the prompt)\n"
-  for _, file in ipairs(list_of_analyzed_files) do
-    list_of_analyzed_files_str = list_of_analyzed_files_str .. file .. "\n"
-  end
-  local update = M.createPopup(M.fill(def.loading_tpl .. list_of_analyzed_files_str, args), width - 12, height - 8)
+  local update = M.createPopup(M.fill(def.loading_tpl .. M.listScannedFiles(), args), width - 12, height - 8)
   local prompt = M.fill(def.prompt_tpl, args)
   local instruction = M.fill(def.instruction_tpl, args)
   local project_context = M.readFilesFromAIConfig()
@@ -272,18 +276,6 @@ vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
   callback = M.close,
 })
 
-vim.api.nvim_create_user_command('AIDefineCword', function()
-  local text = vim.fn.expand('<cword>')
-  if M.hasLetters(text) then
-    M.handle('define', text)
-  end
-end, {})
-
--- Create a user command "AIFindConfig" to call the function M.findConfig
--- vim.api.nvim_create_user_command('AIFindConfig', M.findConfig, {})
--- Create a user command "AIListFilesFromConfig" to call the function M.listFilesFromConfig
--- vim.api.nvim_create_user_command('AIListFilesFromConfig', M.listFilesFromConfig, {})
--- Create a user command "AIReadFilesFromAIConfig" to call the function M.readFilesFromAIConfig
--- vim.api.nvim_create_user_command('AIReadFilesFromAIConfig', M.readFilesFromAIConfig, {})
+vim.api.nvim_create_user_command('AIListScannedFiles', M.listScannedFiles(), {})
 
 return M
