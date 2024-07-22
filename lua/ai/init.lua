@@ -270,6 +270,14 @@ function M.setup(opts)
       end, { range = true, nargs = '?' })
     end
   end
+
+  vim.api.nvim_create_user_command('AIListScannedFiles', function()
+    local width = vim.fn.winwidth(0)
+    local height = vim.fn.winheight(0)
+    local scanned_files = M.listScannedFiles()
+    local update = M.createPopup(scanned_files, width - 12, height - 8)
+    update(scanned_files)
+  end, {})
 end
 
 vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
