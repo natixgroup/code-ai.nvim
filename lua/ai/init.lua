@@ -84,11 +84,13 @@ function M.listScannedFiles()
   local analyzed_files_as_array = M.listFilesFromConfig()
   local analyzed_files_as_string = "\n\n# This is the list of analyzed files (list not part of the prompt)\n"
   for _, file in ipairs(analyzed_files_as_array) do
-    analyzed_files_as_string = analyzed_files_as_string .. "- " .. file .. "\n"
+    local full_path = vim.fn.getcwd() .. '/' .. file
+    local stat = vim.loop.fs_stat(full_path)
+    local size = stat and stat.size or "unknown"
+    analyzed_files_as_string = analyzed_files_as_string .. "- " .. file .. " (Size: " .. size .. " bytes)\n"
   end
   return analyzed_files_as_string
 end
-
 
 local function splitLines(input)
   local lines = {}
