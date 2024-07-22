@@ -9,15 +9,7 @@ local default_prompts = {
     instruction_tpl = 'Act as a command line command that has been issued with the --help flag',
     result_tpl = '${output}',
     require_input = false,
-  },
-  list_scanned_files = {
-    command = 'AIListScannedFiles',
-    loading_tpl = 'Loading...',
-    prompt_tpl = 'List all the files that have been scanned',
-    instruction_tpl = 'List all the files that have been scanned',
-    result_tpl = '${output}',
-    require_input = false,
-  },
+  }
 }
 
 local M = {}
@@ -284,10 +276,5 @@ vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
   callback = M.close,
 })
 
-vim.api.nvim_create_user_command(
-  'AIListScannedFiles',
-  function() M.handle('list_scanned_files', M.listScannedFiles()) end,
-  {}
-)
 
 return M
