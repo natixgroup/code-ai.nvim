@@ -210,7 +210,7 @@ function M.handle(name, input)
     input = input,
     input_encoded = vim.fn.json_encode(input),
   }
-  local scanned_files = M.listFilesFromConfig()
+  local scanned_files = M.listScannedFiles()
   local update = M.createPopup(M.fill(def.loading_tpl .. scanned_files, args), width - 12, height - 8)
   local prompt = M.fill(def.prompt_tpl, args)
   local instruction = M.fill(def.instruction_tpl, args)
