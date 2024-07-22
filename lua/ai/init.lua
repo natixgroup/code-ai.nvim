@@ -2,11 +2,19 @@ local gemini = require('ai.gemini.query')
 local chatgpt = require('ai.chatgpt.query')
 
 local default_prompts = {
-  freeStyle = {
+  introduce = {
     command = 'AIIntroduceYourself',
     loading_tpl = 'Loading...',
     prompt_tpl = 'Say who you are, your version, and the currently used model',
     instruction_tpl = 'Act as a command line command that has been issued with the --help flag',
+    result_tpl = '${output}',
+    require_input = false,
+  },
+  list_scanned_files = {
+    command = 'AIListScannedFiles',
+    loading_tpl = 'Loading...',
+    prompt_tpl = 'List all the files that have been scanned',
+    instruction_tpl = 'List all the files that have been scanned',
     result_tpl = '${output}',
     require_input = false,
   },
@@ -278,7 +286,7 @@ vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
 
 vim.api.nvim_create_user_command(
   'AIListScannedFiles',
-  function() M.handle('listScannedFiles', M.listScannedFiles()) end,
+  function() M.handle('list_scanned_files', M.listScannedFiles()) end,
   {}
 )
 
