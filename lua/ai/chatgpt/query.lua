@@ -52,7 +52,8 @@ function query.ask(instruction, prompt, opts, api_key)
               table.insert(messages, {role = 'user', content = "ChatGPT, I need your help on this project."})
               for _, context in pairs(project_context) do
                 table.insert(messages, {role = 'assistant', content = "What is the content of `" .. context .. "` ?"})
-                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"})
+                -- table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"})
+                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```"})
               end
               table.insert(messages, {role = 'assistant', content = "Then what do you want me to do with all that information?"})
             end
