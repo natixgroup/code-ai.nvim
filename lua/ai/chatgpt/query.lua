@@ -1,7 +1,6 @@
 local curl = require('plenary.curl')
 local query = {}
 
--- Function in order to escape "%" character
 function query.escapePercent(s)
   return string.gsub(s, "%%", "%%%%")
 end
@@ -51,9 +50,9 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
   local url_path = '/v1/chat/completions'
   curl.post( prod_url .. url_path,
     {
-      raw = {
-        { '-H', 'Content-type: application/json' },
-        { '-H', 'Authorization: Bearer ' .. api_key }
+      headers = {
+        [ 'Content-type' ] = 'application/json',
+        [ 'Authorization' ] = 'Bearer ' .. api_key
       },
       body = vim.fn.json_encode(
           {
@@ -64,7 +63,7 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
           }
       ),
       callback = function(res)
-        vim.schedule(function() query.askCallback(res, opts) end)
+        query.askCallback(res, opts)
       end
     })
 end

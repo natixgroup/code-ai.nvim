@@ -1,8 +1,3 @@
--- The lua/ai/gemini/query.lua file is about querying the Gemini API.
--- It uses "vim.schedule" to schedule the "query.askCallback" function to be called asynchronously.
--- The problem is I encouter "value too large" error when I run the code with a big project_context.
--- Propose a new lua/ai/gemini/query.lua file that does not use "vim.schedule" and does not encouter "value too large" error when running the code with a big project_context.
--- Answer with the whole content of the new lua/ai/gemini/query.lua file.
 local curl = require('plenary.curl')
 local query = {}
 
@@ -15,7 +10,7 @@ function query.formatResult(data)
   local candidates_number = #data['candidates']
   if candidates_number == 1 then
     if data['candidates'][1]['content'] == nil then
-      result = '\n#Gemini error\n\nGemini stoped with the reason:' .. data['candidates'][1]['finishReason'] .. '\n'
+      result = '\n#Gemini error\n\nGemini stopped with the reason: ' .. data['candidates'][1]['finishReason'] .. '\n'
       return result
     else
       result = '\n# This is Gemini answer\n\n'
@@ -65,18 +60,17 @@ end
 
 function query.ask(instruction, project_context, prompt, opts, api_key)
   local prod_url = 'https://generativelanguage.googleapis.com'
-  -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local prod_path = '/v1beta/models/gemini-1.5-pro-latest:generateContent'
   curl.post(prod_url .. prod_path,
-     {
-      raw = {
-        '-H', 'Content-type: application/json',
-        '-H', 'x-goog-api-key: ' .. api_key
+    {
+      headers = {
+        ['Content-type'] = 'application/json',
+        ['x-goog-api-key'] = api_key
       },
       body = vim.fn.json_encode(
         {
           system_instruction = {parts = {text = instruction}},
-          contents =           query.buildContents(prompt, project_context),
+          contents = query.buildContents(prompt, project_context),
           safetySettings = {
             { category = 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold = 'BLOCK_NONE' },
             { category = 'HARM_CATEGORY_HATE_SPEECH',       threshold = 'BLOCK_NONE' },
@@ -89,10 +83,9 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
           }
         }),
       callback = function(res)
-        vim.schedule(function() query.askCallback(res, opts) end)
+        query.askCallback(res, opts)
       end
     })
 end
+
 return query
-
-
