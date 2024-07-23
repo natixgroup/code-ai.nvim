@@ -1,8 +1,3 @@
--- The "lua/ai/init.lua" file has a "M.setup" function that calls "vim.schedule" with a "text" parameter.
--- The problem is when "text" is big, the "vim.schedule" function errors with "value too large".
--- Propose another version of the "lua/ai/init.lua" file that does not use "vim.schedule" and accept big "text" parameters.
--- Answer with the full content of the proposed "lua/ai/init.lua" file.
---
 local gemini = require('ai.gemini.query')
 local chatgpt = require('ai.chatgpt.query')
 
@@ -202,7 +197,6 @@ function M.fill(tpl, args)
   return tpl
 end
 
-
 function M.handle(name, input)
   local def = M.prompts[name]
   local width = vim.fn.winwidth(0)
@@ -222,7 +216,7 @@ function M.handle(name, input)
   local function handleResult(output, output_key)
     args[output_key] = output
     args.output = (args.gemini_output or '') .. (args.chatgpt_output or '')
-    return M.fill(def.result_tpl or '${output}', args)
+    update(M.fill(def.result_tpl or '${output}', args)) -- Update the popup directly
   end
 
   gemini.ask(
@@ -231,7 +225,7 @@ function M.handle(name, input)
     prompt,
     {
       handleResult = function(gemini_output) return handleResult(gemini_output, 'gemini_output') end,
-      callback = update
+      callback = function() end -- No need for a separate callback here
     },
     M.opts.gemini_api_key
   )
@@ -242,7 +236,7 @@ function M.handle(name, input)
     prompt,
     {
       handleResult = function(chatgpt_output) return handleResult(chatgpt_output, 'chatgpt_output') end,
-      callback = update
+      callback = function() end -- No need for a separate callback here
     },
     M.opts.chatgpt_api_key
   )
@@ -273,9 +267,7 @@ function M.setup(opts)
           text = M.getSelectedText(true)
         end
         if not v.require_input or M.hasLetters(text) then
-          vim.schedule(function()
-            M.handle(k, text)
-          end)
+          M.handle(k, text) -- Call handle directly without scheduling
         end
       end, { range = true, nargs = '?' })
     end
