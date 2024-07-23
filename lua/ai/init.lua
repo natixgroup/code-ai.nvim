@@ -1,3 +1,8 @@
+-- The "lua/ai/init.lua" file has a "M.setup" function that calls "vim.schedule" with a "text" parameter.
+-- The problem is when "text" is big, the "vim.schedule" function errors with "value too large".
+-- Propose another version of the "lua/ai/init.lua" file that does not use "vim.schedule" and accept big "text" parameters.
+-- Answer with the full content of the proposed "lua/ai/init.lua" file.
+--
 local gemini = require('ai.gemini.query')
 local chatgpt = require('ai.chatgpt.query')
 
