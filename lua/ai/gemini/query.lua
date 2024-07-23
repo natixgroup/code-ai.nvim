@@ -65,8 +65,7 @@ function query.ask(instruction, prompt, opts, api_key)
               table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
               for _, context in pairs(project_context) do
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
-                -- table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"}}})
-                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" }}})
+                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"}}})
               end
               table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
             end
