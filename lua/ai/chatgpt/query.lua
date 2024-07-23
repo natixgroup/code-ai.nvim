@@ -36,7 +36,7 @@ function query.getFileContent(path)
   if file then
     local content = file:read("*all")
     file:close()
-    return content
+    return ""
   end
 end
 
