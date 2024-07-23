@@ -1,7 +1,11 @@
+-- The lua/ai/gemini/query.lua file is about querying the Gemini API.
+-- It uses "vim.schedule" to schedule the "query.askCallback" function to be called asynchronously.
+-- The problem is I encouter "value too large" error when I run the code with a big project_context.
+-- Propose a new lua/ai/gemini/query.lua file that does not use "vim.schedule" and does not encouter "value too large" error when running the code with a big project_context.
+-- Answer with the whole content of the new lua/ai/gemini/query.lua file.
 local curl = require('plenary.curl')
 local query = {}
 
--- Function in order to escape "%" character
 function query.escapePercent(s)
   return string.gsub(s, "%%", "%%%%")
 end
