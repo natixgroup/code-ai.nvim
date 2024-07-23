@@ -30,6 +30,16 @@ function query.askCallback(res, opts)
   opts.callback(result)
 end
 
+function query.getFileContent(path)
+  local base_path=vim.fn.getcwd()
+  local file = io.open(base_path .. '/' .. path, "r")
+  if file then
+    local content = file:read("*all")
+    file:close()
+    return content
+  end
+end
+
 function query.buildMessages(system_instruction, project_context, prompt)
   local messages = {}
   table.insert(messages, { role = 'system', content = system_instruction })
@@ -37,7 +47,7 @@ function query.buildMessages(system_instruction, project_context, prompt)
     table.insert(messages, {role = 'user', content = "ChatGPT, I need your help on this project."})
     for _, context in ipairs(project_context) do
       table.insert(messages, {role = 'assistant', content = "What is the content of `" .. context.filename .. "` ?"})
-      table.insert(messages, {role = 'user',  content = "The content of `" .. context.filename .. "` is :\n```" .. context.filecontent .. "\n```"})
+      table.insert(messages, {role = 'user',  content = "The content of `" .. context.filename .. "` is :\n```" .. query.getFileContent(context.filename) .. "\n```"})
     end
     table.insert(messages, {role = 'assistant', content = "Then what do you want me to do with all that information?"})
   end
