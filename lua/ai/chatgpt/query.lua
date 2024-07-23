@@ -1,7 +1,6 @@
 local curl = require('plenary.curl')
 local query = {}
 
--- Function in order to escape "%" character
 function query.escapePercent(s)
   return string.gsub(s, "%%", "%%%%")
 end
@@ -36,7 +35,7 @@ function query.getFileContent(path)
   if file then
     local content = file:read("*all")
     file:close()
-    return ""
+    return content
   end
 end
 
