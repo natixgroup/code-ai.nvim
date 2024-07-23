@@ -63,7 +63,7 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
           }
       ),
       callback = function(res)
-        query.askCallback(res, opts)
+        vim.schedule(function() query.askCallback(res, opts) end)
       end
     })
 end
