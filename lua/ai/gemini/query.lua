@@ -8,7 +8,7 @@ function query.log(message)
   if not log_file then
     error("Could not open log file for writing.")
   end
-  log_file:write(message .. "\n\n")
+  log_file:write(message .. "\nn")
   log_file:close()
 end
 
@@ -76,7 +76,7 @@ function query.ask(instruction, prompt, opts, api_key)
             if #project_context > 0 then
               table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
               for _, context in pairs(project_context) do
-                query.log("entered gemini context")
+                query.log("entered gemini context: " .. context)
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
                 table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}})
               end
