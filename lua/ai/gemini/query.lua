@@ -85,7 +85,7 @@ function query.ask(instruction, prompt, opts, api_key)
             query.log("entered gemini prompt: " .. prompt)
             table.insert(contents, {role = 'user', parts = {{text = prompt}}})
             return contents
-          end)(),
+          end),
           safetySettings = {
             { category = 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold = 'BLOCK_NONE' },
             { category = 'HARM_CATEGORY_HATE_SPEECH',       threshold = 'BLOCK_NONE' },
@@ -98,7 +98,7 @@ function query.ask(instruction, prompt, opts, api_key)
           }
         }),
       callback = function(res)
-         vim.schedule(function() query.askCallback(res, opts) end)
+        vim.schedule(function() query.askCallback(res, opts) end)
       end
     })
 end
