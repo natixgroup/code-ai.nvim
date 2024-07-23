@@ -28,21 +28,32 @@ function query.formatResult(data)
 end
 
 function query.askCallback(res, opts)
-  local result
   if res.status ~= 200 then
+    local result
     if opts.handleError ~= nil then
       result = opts.handleError(res.status, res.body)
     else
       result = 'Error: Gemini API responded with the status ' .. tostring(res.status) .. '\n\n' .. res.body
     end
+    opts.callback(result) -- Directly call the callback with the error
   else
+    -- Process the response in chunks
     local data = vim.fn.json_decode(res.body)
-    result = query.formatResult(data)
-    if opts.handleResult ~= nil then
-      result = opts.handleResult(result)
+    local formatted_result = query.formatResult(data)
+    local chunk_size = 4000 -- Adjust this value if needed
+    local start = 1
+
+    local function processChunk()
+      if start <= #formatted_result then
+        local chunk = string.sub(formatted_result, start, start + chunk_size - 1)
+        opts.callback(chunk)
+        start = start + chunk_size
+        vim.schedule(processChunk) -- Schedule the next chunk
+      end
     end
+
+    processChunk() -- Start processing chunks
   end
-  opts.callback(result)
 end
 
 function query.getFileContent(path)
@@ -95,7 +106,7 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
           }
         }),
       callback = function(res)
-        vim.schedule(function() query.askCallback(res, opts) end)
+        query.askCallback(res, opts)
       end
     })
 end
