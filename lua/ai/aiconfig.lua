@@ -40,7 +40,7 @@ function aiconfig.readFilesFromAIConfig()
     if f then
       local filename = file
       local filecontent = f:read("*all")
-      table.insert(contents, {filename = filename, filecontent = filecontent})
+      table.insert(contents, {filename = filename, filecontent = ''})
       f:close()
     end
   end
