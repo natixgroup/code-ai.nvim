@@ -1,4 +1,3 @@
---
 local curl = require('plenary.curl')
 local query = {}
 
@@ -29,42 +28,21 @@ function query.formatResult(data)
 end
 
 function query.askCallback(res, opts)
+  local result
   if res.status ~= 200 then
-    local result
     if opts.handleError ~= nil then
       result = opts.handleError(res.status, res.body)
     else
       result = 'Error: Gemini API responded with the status ' .. tostring(res.status) .. '\n\n' .. res.body
     end
-    opts.callback(result) -- Directly call the callback with the error
   else
-    -- Process the response in chunks
     local data = vim.fn.json_decode(res.body)
-    local formatted_result = query.formatResult(data)
-    local chunk_size = 4000 -- Adjust this value if needed
-    local start = 1
-
-    local function processChunk()
-      if start <= #formatted_result then
-        local chunk = string.sub(formatted_result, start, start + chunk_size - 1)
-        opts.callback(chunk)
-        start = start + chunk_size
-        vim.schedule(processChunk) -- Schedule the next chunk
-      end
+    result = query.formatResult(data)
+    if opts.handleResult ~= nil then
+      result = opts.handleResult(result)
     end
-
-    processChunk() -- Start processing chunks
   end
-end
-
-function query.getFileContent(path)
-  local base_path=vim.fn.getcwd()
-  local file = io.open(base_path .. '/' .. path, "r")
-  if file then
-    local content = file:read("*all")
-    file:close()
-    return content
-  end
+  opts.callback(result)
 end
 
 function query.buildContents(prompt, project_context)
@@ -73,7 +51,7 @@ function query.buildContents(prompt, project_context)
     table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
     for _, context in ipairs(project_context) do
       table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context.filename .. "` ?"}}})
-      table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context.filename .. "` is :\n```" .. query.getFileContent(context.filename) .. "\n```"}}})
+      table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context.filename .. "` is :\n```" .. context.filecontent .. "\n```"}}})
     end
     table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
   end
@@ -107,8 +85,10 @@ function query.ask(instruction, project_context, prompt, opts, api_key)
           }
         }),
       callback = function(res)
-        query.askCallback(res, opts)
+        vim.schedule(function() query.askCallback(res, opts) end)
       end
     })
 end
 return query
+
+
