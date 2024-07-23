@@ -45,20 +45,6 @@ function query.askCallback(res, opts)
   opts.callback(result)
 end
 
-function query.buildContents(prompt, project_context)
-  local contents = {}
-  if #project_context > 0 then
-    table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
-    for _, context in ipairs(project_context) do
-      table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context.filename .. "` ?"}}})
-      table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context.filename .. "` is :\n```" .. aiconfig.returnContentsOf(context.filename) .. "\n```"}}})
-    end
-    table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
-  end
-  table.insert(contents, {role = 'user', parts = {{text = prompt}}})
-  return contents
-end
-
 function query.ask(instruction, prompt, opts, api_key)
   local prod_url = 'https://generativelanguage.googleapis.com'
   -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
