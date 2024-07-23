@@ -1,5 +1,6 @@
 local curl = require('plenary.curl')
 local aiconfig = require('ai.aiconfig')
+local json = require('ai.json')
 local query = {}
 
 function query.escapePercent(s)
@@ -46,8 +47,8 @@ function query.askCallback(res, opts)
 end
 
 function query.ask(instruction, prompt, opts, api_key)
-  local prod_url = 'https://generativelanguage.googleapis.com'
-  -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
+  -- local prod_url = 'https://generativelanguage.googleapis.com'
+  local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local prod_path = '/v1beta/models/gemini-1.5-pro-latest:generateContent'
   local project_context = aiconfig.listFilesFromConfig()
   curl.post(prod_url .. prod_path,
@@ -56,7 +57,7 @@ function query.ask(instruction, prompt, opts, api_key)
         ['Content-type'] = 'application/json',
         ['x-goog-api-key'] = api_key
       },
-      body = vim.fn.json_encode(
+      body = json.encode(
         {
           system_instruction = {parts = {text = instruction}},
           contents = (function()
