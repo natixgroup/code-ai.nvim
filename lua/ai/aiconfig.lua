@@ -48,7 +48,7 @@ function aiconfig.readFilesFromAIConfig()
 end
 
 function aiconfig.returnContentsOf(file)
-  local f = io.open(vim.fn.getcwd() .. file, "r")
+  local f = io.open(file, "r")
   if f then
     local filecontent = f:read("*all")
     f:close()
