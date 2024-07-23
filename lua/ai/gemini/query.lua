@@ -8,7 +8,7 @@ function query.log(message)
   if not log_file then
     error("Could not open log file for writing.")
   end
-  log_file:write(message .. "\nn")
+  log_file:write(message .. "\n")
   log_file:close()
 end
 
@@ -82,6 +82,7 @@ function query.ask(instruction, prompt, opts, api_key)
               end
               table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
             end
+            query.log("entered gemini prompt: " .. prompt)
             table.insert(contents, {role = 'user', parts = {{text = prompt}}})
             return contents
           end)(),
