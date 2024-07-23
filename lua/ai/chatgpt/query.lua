@@ -31,8 +31,8 @@ function query.askCallback(res, opts)
 end
 
 function query.ask(instruction, prompt, opts, api_key)
-  -- local prod_url = 'https://api.openai.com'
-  local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
+  local prod_url = 'https://api.openai.com'
+  -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local url_path = '/v1/chat/completions'
   local project_context = aiconfig.listFilesFromConfig()
 
@@ -52,7 +52,7 @@ function query.ask(instruction, prompt, opts, api_key)
               table.insert(messages, {role = 'user', content = "ChatGPT, I need your help on this project."})
               for _, context in pairs(project_context) do
                 table.insert(messages, {role = 'assistant', content = "What is the content of `" .. context .. "` ?"})
-                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"})
+                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"})
               end
               table.insert(messages, {role = 'assistant', content = "Then what do you want me to do with all that information?"})
             end

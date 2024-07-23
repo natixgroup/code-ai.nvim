@@ -46,8 +46,8 @@ function query.askCallback(res, opts)
 end
 
 function query.ask(instruction, prompt, opts, api_key)
-  -- local prod_url = 'https://generativelanguage.googleapis.com'
-  local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
+  local prod_url = 'https://generativelanguage.googleapis.com'
+  -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local prod_path = '/v1beta/models/gemini-1.5-pro-latest:generateContent'
   local project_context = aiconfig.listFilesFromConfig()
   curl.post(prod_url .. prod_path,
@@ -65,7 +65,7 @@ function query.ask(instruction, prompt, opts, api_key)
               table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
               for _, context in pairs(project_context) do
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
-                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.returnContentsOf(context) .. "\n```"}}})
+                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}})
               end
               table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
             end
