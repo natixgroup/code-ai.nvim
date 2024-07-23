@@ -34,7 +34,6 @@ end
 
 function M.findConfig()
   local path = vim.fn.getcwd() .. '/.aiconfig'
-  -- Check if the file exists
   local file = io.open(path, "r")
   if file ~= nil then
     io.close(file)
@@ -138,12 +137,10 @@ function M.getSelectedText(esc)
   end
   local vstart = vim.fn.getpos("'<")
   local vend = vim.fn.getpos("'>")
-  -- If the selection has been made under VISUAL mode:
   local ok, lines = pcall(vim.api.nvim_buf_get_text, 0, vstart[2] - 1, vstart[3] - 1, vend[2] - 1, vend[3], {})
   if ok then
     return joinLines(lines)
   else
-    -- If the selection has been made under VISUAL LINE mode:
     lines = vim.api.nvim_buf_get_lines(0, vstart[2] - 1, vend[2], false)
     return joinLines(lines)
   end
@@ -271,7 +268,6 @@ function M.setup(opts)
           text = M.getSelectedText(true)
         end
         if not v.require_input or M.hasLetters(text) then
-          -- delayed so the popup won't be closed immediately
           vim.schedule(function()
             M.handle(k, text)
           end)
