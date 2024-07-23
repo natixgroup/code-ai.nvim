@@ -51,7 +51,7 @@ function query.buildContents(prompt, project_context)
     table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
     for _, context in ipairs(project_context) do
       table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context.filename .. "` ?"}}})
-      table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context.filename .. "` is :\n```" .. context.filecontent .. "\n```"}}})
+      table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context.filename .. "` is :\n```" .. aiconfig.returnContentsOf(context.filename) .. "\n```"}}})
     end
     table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
   end

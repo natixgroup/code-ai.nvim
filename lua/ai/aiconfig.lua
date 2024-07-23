@@ -47,6 +47,16 @@ function aiconfig.readFilesFromAIConfig()
   return contents
 end
 
+function aiconfig.returnContentsOf(file)
+  local f = io.open(vim.fn.getcwd() .. file, "r")
+  if f then
+    local filecontent = f:read("*all")
+    f:close()
+    return filecontent
+  end
+  return ""
+end
+
 function aiconfig.listScannedFiles()
   local analyzed_files_as_array = aiconfig.listFilesFromConfig()
   local analyzed_files_as_string = "\n# This is the list of analyzed files (list not part of the prompt)\n"

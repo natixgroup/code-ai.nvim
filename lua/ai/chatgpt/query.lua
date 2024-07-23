@@ -37,7 +37,7 @@ function query.buildMessages(system_instruction, project_context, prompt)
     table.insert(messages, {role = 'user', content = "ChatGPT, I need your help on this project."})
     for _, context in ipairs(project_context) do
       table.insert(messages, {role = 'assistant', content = "What is the content of `" .. context.filename .. "` ?"})
-      table.insert(messages, {role = 'user',  content = "The content of `" .. context.filename .. "` is :\n```" .. context.filecontent .. "\n```"})
+      table.insert(messages, {role = 'user',  content = "The content of `" .. context.filename .. "` is :\n```" .. aiconfig.returnContentsOf(context.filename) .. "\n```"})
     end
     table.insert(messages, {role = 'assistant', content = "Then what do you want me to do with all that information?"})
   end
