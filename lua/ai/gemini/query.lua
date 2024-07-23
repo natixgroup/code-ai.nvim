@@ -3,6 +3,15 @@ local aiconfig = require('ai.aiconfig')
 local json = require('ai.json')
 local query = {}
 
+function query.log(message)
+  local log_file = io.open("/tmp/aiconfig.log", "a")
+  if not log_file then
+    error("Could not open log file for writing.")
+  end
+  log_file:write(message .. "\n\n")
+  log_file:close()
+end
+
 function query.escapePercent(s)
   return string.gsub(s, "%%", "%%%%")
 end
@@ -47,6 +56,7 @@ function query.askCallback(res, opts)
 end
 
 function query.ask(instruction, prompt, opts, api_key)
+  query.log("entered gemini query.ask")
   -- local prod_url = 'https://generativelanguage.googleapis.com'
   local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local prod_path = '/v1beta/models/gemini-1.5-pro-latest:generateContent'
@@ -61,10 +71,12 @@ function query.ask(instruction, prompt, opts, api_key)
         {
           system_instruction = {parts = {text = instruction}},
           contents = (function()
+            M.log("entered gemini contents")
             local contents = {}
             if #project_context > 0 then
               table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
               for _, context in pairs(project_context) do
+                M.log("entered gemini context")
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
                 table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}})
               end

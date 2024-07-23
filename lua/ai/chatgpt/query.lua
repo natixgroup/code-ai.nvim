@@ -4,6 +4,15 @@ local json = require('ai.json')
 
 local query = {}
 
+function query.log(message)
+  local log_file = io.open("/tmp/aiconfig.log", "a")
+  if not log_file then
+    error("Could not open log file for writing.")
+  end
+  log_file:write(message .. "\n\n")
+  log_file:close()
+end
+
 function query.escapePercent(s)
   return string.gsub(s, "%%", "%%%%")
 end

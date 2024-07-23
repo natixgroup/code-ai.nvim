@@ -158,7 +158,7 @@ function M.handle(name, input)
     prompt,
     {
       handleResult = function(gemini_output) return handleResult(gemini_output, 'gemini_output') end,
-      callback = function() end -- No need for a separate callback here
+      callback = function() end
     },
     M.opts.gemini_api_key
   )
@@ -168,7 +168,7 @@ function M.handle(name, input)
     prompt,
     {
       handleResult = function(chatgpt_output) return handleResult(chatgpt_output, 'chatgpt_output') end,
-      callback = function() end -- No need for a separate callback here
+      callback = function() end
     },
     M.opts.chatgpt_api_key
   )
@@ -199,7 +199,7 @@ function M.setup(opts)
           text = M.getSelectedText(true)
         end
         if not v.require_input or M.hasLetters(text) then
-          M.handle(k, text) -- Call handle directly without scheduling
+          M.handle(k, text)
         end
       end, { range = true, nargs = '?' })
     end
