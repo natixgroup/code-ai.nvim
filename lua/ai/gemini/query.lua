@@ -71,12 +71,12 @@ function query.ask(instruction, prompt, opts, api_key)
         {
           system_instruction = {parts = {text = instruction}},
           contents = (function()
-            M.log("entered gemini contents")
+            query.log("entered gemini contents")
             local contents = {}
             if #project_context > 0 then
               table.insert(contents, {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}})
               for _, context in pairs(project_context) do
-                M.log("entered gemini context")
+                query.log("entered gemini context")
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
                 table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}})
               end
