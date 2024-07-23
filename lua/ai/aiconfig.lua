@@ -32,7 +32,7 @@ end
 function aiconfig.returnContentsOf(file)
   local stat = vim.loop.fs_stat(file)
   local size = stat and stat.size or "unknown"
-  if size > 1024 * 8 then
+  if size > 1024 * 1 then
     return "."
   end
   local f = io.open(file, "r")
