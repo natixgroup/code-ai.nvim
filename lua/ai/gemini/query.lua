@@ -1,4 +1,5 @@
 local curl = require('plenary.curl')
+local aiconfig = require('ai.aiconfig')
 local query = {}
 
 function query.escapePercent(s)
@@ -58,9 +59,10 @@ function query.buildContents(prompt, project_context)
   return contents
 end
 
-function query.ask(instruction, project_context, prompt, opts, api_key)
+function query.ask(instruction, prompt, opts, api_key)
   local prod_url = 'https://generativelanguage.googleapis.com'
   local prod_path = '/v1beta/models/gemini-1.5-pro-latest:generateContent'
+  local project_context = aiconfig.readFilesFromAIConfig()
   curl.post(prod_url .. prod_path,
     {
       headers = {

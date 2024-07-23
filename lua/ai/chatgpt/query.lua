@@ -1,4 +1,5 @@
 local curl = require('plenary.curl')
+local aiconfig = require('ai.aiconfig')
 local query = {}
 
 function query.escapePercent(s)
@@ -44,10 +45,11 @@ function query.buildMessages(system_instruction, project_context, prompt)
   return messages
 end
 
-function query.ask(instruction, project_context, prompt, opts, api_key)
+function query.ask(instruction, prompt, opts, api_key)
   local prod_url = 'https://api.openai.com'
   -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local url_path = '/v1/chat/completions'
+  local project_context = aiconfig.readFilesFromAIConfig()
   curl.post( prod_url .. url_path,
     {
       headers = {

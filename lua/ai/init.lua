@@ -1,5 +1,6 @@
 local gemini = require('ai.gemini.query')
 local chatgpt = require('ai.chatgpt.query')
+local aiconfig = require('ai.aiconfig')
 
 local default_prompts = {
   introduce = {
@@ -30,72 +31,6 @@ function M.log(message)
   end
   log_file:write(message .. "\n\n")
   log_file:close()
-end
-
-function M.findConfig()
-  local path = vim.fn.getcwd() .. '/.aiconfig'
-  local file = io.open(path, "r")
-  if file ~= nil then
-    io.close(file)
-    return path
-  else
-    return ""
-  end
-end
-
-function M.listFilesFromConfig()
-  local config = M.findConfig()
-  if config == "" then
-    return {}
-  end
-  local patterns = {}
-  for line in io.lines(config) do
-    table.insert(patterns, line)
-  end
-  local files = {}
-  for _, pattern in ipairs(patterns) do
-    for _, file in ipairs(vim.fn.glob(pattern, false, true)) do
-      table.insert(files, file)
-    end
-  end
-  return files
-end
-
-function M.readFilesFromAIConfig()
-  if M.listFilesFromConfig() == {} then
-    return {}
-  end
-  local files = M.listFilesFromConfig()
-  local contents = {}
-  for _, file in ipairs(files) do
-    local f = io.open(file, "r")
-    if f then
-      local filename = file
-      local filecontent = f:read("*all")
-      table.insert(contents, {filename = filename, filecontent = filecontent})
-      f:close()
-    end
-  end
-  return contents
-end
-
-function M.listScannedFiles()
-  local analyzed_files_as_array = M.listFilesFromConfig()
-  local analyzed_files_as_string = "\n# This is the list of analyzed files (list not part of the prompt)\n"
-  for _, file in ipairs(analyzed_files_as_array) do
-    local full_path = vim.fn.getcwd() .. '/' .. file
-    local stat = vim.loop.fs_stat(full_path)
-    local size = stat and stat.size or "unknown"
-    local size_str = size .. " B"
-    if size > 1024 then
-      size_str = string.format("%.2f KB", size / 1024)
-    end
-    if size > 1024 * 1024 then
-      size_str = string.format("%.2f MB", size / (1024 * 1024))
-    end
-    analyzed_files_as_string = analyzed_files_as_string .. "- " .. file .. " (Size: " .. size_str .. ")\n"
-  end
-  return analyzed_files_as_string
 end
 
 local function splitLines(input)
@@ -211,7 +146,6 @@ function M.handle(name, input)
   local update = M.createPopup(M.fill(def.loading_tpl .. scanned_files, args), width - 12, height - 8)
   local prompt = M.fill(def.prompt_tpl, args)
   local instruction = M.fill(def.instruction_tpl, args)
-  local project_context = M.readFilesFromAIConfig()
 
   local function handleResult(output, output_key)
     args[output_key] = output
@@ -221,7 +155,6 @@ function M.handle(name, input)
 
   gemini.ask(
     instruction,
-    project_context,
     prompt,
     {
       handleResult = function(gemini_output) return handleResult(gemini_output, 'gemini_output') end,
@@ -232,7 +165,6 @@ function M.handle(name, input)
 
   chatgpt.ask(
     instruction,
-    project_context,
     prompt,
     {
       handleResult = function(chatgpt_output) return handleResult(chatgpt_output, 'chatgpt_output') end,
@@ -276,7 +208,7 @@ function M.setup(opts)
   vim.api.nvim_create_user_command('AIListScannedFiles', function()
     local width = vim.fn.winwidth(0)
     local height = vim.fn.winheight(0)
-    local scanned_files = M.listScannedFiles()
+    local scanned_files = aiconfig.listScannedFiles()
     local update = M.createPopup(scanned_files, width - 12, height - 8)
     update(scanned_files)
   end, {})
