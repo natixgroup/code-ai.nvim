@@ -31,8 +31,8 @@ function query.askCallback(res, opts)
 end
 
 function query.ask(instruction, prompt, opts, api_key)
-  -- local prod_url = 'https://api.openai.com'
-  local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
+  local prod_url = 'https://api.openai.com'
+  -- local prod_url = 'https://eowloffrpvxwtqp.m.pipedream.net'
   local url_path = '/v1/chat/completions'
   local project_context = aiconfig.listFilesFromConfig()
 
