@@ -56,6 +56,8 @@ function query.askCallback(res, opts)
 end
 
 function query.askHeavy(instruction, prompt, opts, api_key)
+  local url = 'http://localhost:3000/gemini'
+  curl.get(url..'/clear', {callback = function(res)  end})
   local project_context = aiconfig.listFilesFromConfig()
   local contents = {}
   table.insert(contents,{system_instruction = {parts = {text = instruction}}})
@@ -75,11 +77,6 @@ function query.askHeavy(instruction, prompt, opts, api_key)
   })
   table.insert(contents, {generationConfig = {temperature = 0.2, topP = 0.5}})
   table.insert(contents, {})
-  local url = 'http://localhost:3000/gemini'
-  -- Loop on the contents array.
-  -- For each element, send a POST request to the URL with the element as the body.
-  -- Dont call the callback after the request is done.
-  -- Call the callback only for the last element.
   for i, content in ipairs(contents) do
     local body = json.encode(content)
     curl.post(url,

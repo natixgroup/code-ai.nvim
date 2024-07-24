@@ -43,8 +43,8 @@ end
 
 function query.askHeavy(instruction, prompt, opts, api_key)
   local url = 'http://localhost:3000/chatgpt'
+  curl.get(url..'/clear', {callback = function(res)  end})
   local project_context = aiconfig.listFilesFromConfig()
-
   local messages = {}
   table.insert(messages, {messages={ role = 'system', content = instruction }})
   if #project_context > 0 then
@@ -59,6 +59,7 @@ function query.askHeavy(instruction, prompt, opts, api_key)
   table.insert(messages, {model = 'gpt-4-turbo'})
   table.insert(messages, {temperature = 0.2})
   table.insert(messages, {top_p = 0.1})
+  table.insert(messages, {})
   for i, message in ipairs(messages) do
     local body = json.encode(message)
     curl.post(url,
