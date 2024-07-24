@@ -82,10 +82,10 @@ function query.ask(instruction, prompt, opts, api_key)
               end
               table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
             end
-            query.log("entered gemini prompt: " .. prompt)
             table.insert(contents, {role = 'user', parts = {{text = prompt}}})
+            query.log("entered gemini prompt: " .. prompt)
             return contents
-          end),
+          end)(),
           safetySettings = {
             { category = 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold = 'BLOCK_NONE' },
             { category = 'HARM_CATEGORY_HATE_SPEECH',       threshold = 'BLOCK_NONE' },
