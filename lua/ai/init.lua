@@ -163,7 +163,7 @@ function M.handle(name, input)
     M.opts.gemini_api_key
   )
 
-  chatgpt.ask(
+  chatgpt.askHeavy(
     instruction,
     prompt,
     {
