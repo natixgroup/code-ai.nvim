@@ -59,8 +59,8 @@ function query.askHeavy(instruction, prompt, opts, api_key)
   table.insert(messages, {model = 'gpt-4-turbo'})
   table.insert(messages, {temperature = 0.2})
   table.insert(messages, {top_p = 0.1})
-  for i, content in ipairs(messages) do
-    local body = json.encode(messages)
+  for i, message in ipairs(messages) do
+    local body = json.encode(message)
     curl.post(url,
       {
         headers = {

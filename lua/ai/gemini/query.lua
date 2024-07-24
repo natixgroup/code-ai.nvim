@@ -81,7 +81,7 @@ function query.askHeavy(instruction, prompt, opts, api_key)
   -- Dont call the callback after the request is done.
   -- Call the callback only for the last element.
   for i, content in ipairs(contents) do
-    local body = json.encode(contents)
+    local body = json.encode(content)
     curl.post(url,
       {
         headers = {
