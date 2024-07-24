@@ -32,9 +32,6 @@ end
 function aiconfig.contentOf(file)
   local stat = vim.loop.fs_stat(file)
   local size = stat and stat.size or "unknown"
-  if size > 1024 * 4 then
-    return "."
-  end
   local f = io.open(file, "r")
   if f then
     local filecontent = f:read("*all")
