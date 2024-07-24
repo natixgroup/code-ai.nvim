@@ -153,7 +153,7 @@ function M.handle(name, input)
     update(M.fill(def.result_tpl or '${output}', args)) -- Update the popup directly
   end
   local number_of_files = #aiconfig.listFilesFromConfig()
-  gemini.ask(
+  gemini.askHeavy(
     instruction,
     prompt,
     {
@@ -163,7 +163,7 @@ function M.handle(name, input)
     M.opts.gemini_api_key
   )
 
-  chatgpt.ask(
+  chatgpt.askHeavy(
     instruction,
     prompt,
     {
