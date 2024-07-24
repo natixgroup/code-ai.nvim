@@ -153,7 +153,7 @@ function M.handle(name, input)
     update(M.fill(def.result_tpl or '${output}', args)) -- Update the popup directly
   end
   local number_of_files = #aiconfig.listFilesFromConfig()
-  gemini.ask(
+  gemini.askHeavy(
     instruction,
     prompt,
     {
