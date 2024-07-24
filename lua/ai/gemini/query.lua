@@ -55,6 +55,48 @@ function query.askCallback(res, opts)
   opts.callback(result)
 end
 
+function query.askHeavy(instruction, prompt, opts, api_key)
+  local project_context = aiconfig.listFilesFromConfig()
+  local contents = {}
+  table.insert(contents,{system_instruction = {parts = {text = instruction}}})
+  table.insert(contents, {contents = {role = 'user', parts = {{text = "Gemini, I need your help on this project."}}}})
+  for _, context in pairs(project_context) do
+    query.log("entered gemini context: " .. context)
+    table.insert(contents, {contents = {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}}})
+    table.insert(contents, {contents = {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}}})
+  end
+  table.insert(contents, {contents = {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}}})
+  table.insert(contents, {contents = {role = 'user', parts = {{text = prompt}}}})
+  table.insert(contents, {safetySettings = {
+    { category = 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold = 'BLOCK_NONE' }, 
+    { category = 'HARM_CATEGORY_HATE_SPEECH', threshold = 'BLOCK_NONE' },
+    { category = 'HARM_CATEGORY_HARASSMENT', threshold = 'BLOCK_NONE' },
+    { category = 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold = 'BLOCK_NONE' }}
+  })
+  table.insert(contents, {generationConfig = {temperature = 0.2, topP = 0.5}})
+  table.insert(contents, {})
+  local url = 'http://localhost:3000/gemini'
+  -- Loop on the contents array.
+  -- For each element, send a POST request to the URL with the element as the body.
+  -- Dont call the callback after the request is done.
+  -- Call the callback only for the last element.
+  for i, content in ipairs(contents) do
+    local body = json.encode(contents)
+    curl.post(url,
+      {
+        headers = {
+          ['Content-type'] = 'application/json',
+        },
+        body = body,
+        callback = function(res)
+          if i == #contents then
+            vim.schedule(function() query.askCallback(res, opts) end)
+          end
+        end
+      })
+  end
+end
+
 function query.ask(instruction, prompt, opts, api_key)
   query.log("entered gemini query.ask")
   local prod_url = 'https://generativelanguage.googleapis.com'
