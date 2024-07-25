@@ -162,7 +162,6 @@ function M.handle(name, input)
     },
     M.opts.gemini_api_key
   )
-
   chatgpt.askHeavy(
     instruction,
     prompt,
@@ -172,7 +171,6 @@ function M.handle(name, input)
     },
     M.opts.chatgpt_api_key
   )
-
 end
 
 function M.assign(table, other)
