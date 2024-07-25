@@ -160,7 +160,8 @@ function M.handle(name, input)
       handleResult = function(gemini_output) return handleResult(gemini_output, 'gemini_output') end,
       callback = function() end
     },
-    M.opts.gemini_api_key
+    M.opts.gemini_api_key,
+    M.opts.agent_host
   )
   chatgpt.askHeavy(
     instruction,
@@ -169,7 +170,8 @@ function M.handle(name, input)
       handleResult = function(chatgpt_output) return handleResult(chatgpt_output, 'chatgpt_output') end,
       callback = function() end
     },
-    M.opts.chatgpt_api_key
+    M.opts.chatgpt_api_key,
+    M.opts.agent_host
   )
 end
 

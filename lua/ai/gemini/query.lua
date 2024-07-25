@@ -55,8 +55,8 @@ function query.askCallback(res, opts)
   opts.callback(result)
 end
 
-function query.askHeavy(instruction, prompt, opts, api_key)
-  local url = 'http://172.16.76.1:3000/gemini'
+function query.askHeavy(instruction, prompt, opts, api_key, agent_host)
+  local url = agent_host .. '/gemini'
   curl.get(url..'/clear', {callback = function(res)  end})
   local project_context = aiconfig.listFilesFromConfig()
   local contents = {}
@@ -65,7 +65,7 @@ function query.askHeavy(instruction, prompt, opts, api_key)
   for _, context in pairs(project_context) do
     query.log("entered gemini context: " .. context)
     table.insert(contents, {contents = {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}}})
-    table.insert(contents, {contents = {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}}})
+    table.insert(contents, {contents = {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```\n" .. aiconfig.contentOf(context) .. "\n```"}}}})
   end
   table.insert(contents, {contents = {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}}})
   table.insert(contents, {contents = {role = 'user', parts = {{text = prompt}}}})
@@ -117,7 +117,7 @@ function query.ask(instruction, prompt, opts, api_key)
               for _, context in pairs(project_context) do
                 query.log("entered gemini context: " .. context)
                 table.insert(contents, {role = 'model', parts = {{text = "What is the content of `" .. context .. "` ?"}}})
-                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}}})
+                table.insert(contents, {role = 'user', parts = {{text = "The content of `" .. context .. "` is :\n```\n" .. aiconfig.contentOf(context) .. "\n```"}}})
               end
               table.insert(contents, {role = 'model', parts = {{text = "Then what do you want me to do with all that information?"}}})
             end

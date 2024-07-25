@@ -41,8 +41,8 @@ function query.askCallback(res, opts)
   opts.callback(result)
 end
 
-function query.askHeavy(instruction, prompt, opts, api_key)
-  local url = 'http://172.16.76.1:3000/chatgpt'
+function query.askHeavy(instruction, prompt, opts, api_key, agent_host)
+  local url = agent_host .. '/chatgpt'
   curl.get(url..'/clear', {callback = function(res)  end})
   local project_context = aiconfig.listFilesFromConfig()
   local messages = {}
@@ -51,7 +51,7 @@ function query.askHeavy(instruction, prompt, opts, api_key)
     table.insert(messages, {messages={role = 'user', content = "ChatGPT, I need your help on this project."}})
     for _, context in pairs(project_context) do
       table.insert(messages, {messages={role = 'assistant', content = "What is the content of `" .. context .. "` ?"}})
-      table.insert(messages, {messages={role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"}})
+      table.insert(messages, {messages={role = 'user',  content = "The content of `" .. context .. "` is :\n```\n" .. aiconfig.contentOf(context) .. "\n```"}})
     end
     table.insert(messages, {messages={role = 'assistant', content = "Then what do you want me to do with all that information?"}})
   end
@@ -99,7 +99,7 @@ function query.ask(instruction, prompt, opts, api_key)
               table.insert(messages, {role = 'user', content = "ChatGPT, I need your help on this project."})
               for _, context in pairs(project_context) do
                 table.insert(messages, {role = 'assistant', content = "What is the content of `" .. context .. "` ?"})
-                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```" .. aiconfig.contentOf(context) .. "\n```"})
+                table.insert(messages, {role = 'user',  content = "The content of `" .. context .. "` is :\n```\n" .. aiconfig.contentOf(context) .. "\n```"})
               end
               table.insert(messages, {role = 'assistant', content = "Then what do you want me to do with all that information?"})
             end
