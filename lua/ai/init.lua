@@ -15,10 +15,11 @@ local default_prompts = {
 
 local M = {}
 M.opts = {
+  agent_host = '',
   gemini_api_key = '',
   chatgpt_api_key = '',
   locale = 'en',
-  alternate_locale = 'zh',
+  alternate_locale = 'fr',
   result_popup_gets_focus = false,
 }
 M.prompts = default_prompts
