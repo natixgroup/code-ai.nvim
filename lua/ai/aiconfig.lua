@@ -43,10 +43,19 @@ end
 
 function aiconfig.listScannedFiles()
   local analyzed_files_as_array = aiconfig.listFilesFromConfig()
-  local analyzed_files_as_string = "\n# This is the list of analyzed files (list not part of the prompt)\n"
+  
+  if #analyzed_files_as_array == 0 then
+    return "# No files to analyze."
+  end
+
+  local analyzed_files_as_string = " will be analyzed:\n"
+  local total_size = 0 -- Initialize total size
+
   for _, file in ipairs(analyzed_files_as_array) do
     local stat = vim.loop.fs_stat(file)
-    local size = stat and stat.size or "unknown"
+    local size = stat and stat.size or 0 -- Default to 0 if size is unknown
+    total_size = total_size + size -- Add file size to total
+
     local size_str = size .. " B"
     if size > 1024 then
       size_str = string.format("%.2f KB", size / 1024)
@@ -56,6 +65,19 @@ function aiconfig.listScannedFiles()
     end
     analyzed_files_as_string = analyzed_files_as_string .. "- " .. file .. " (Size: " .. size_str .. ")\n"
   end
+
+  -- Format total size
+  local total_size_str = total_size .. " B"
+  if total_size > 1024 then
+    total_size_str = string.format("%.2f KB", total_size / 1024)
+  end
+  if total_size > 1024 * 1024 then
+    total_size_str = string.format("%.2f MB", total_size / (1024 * 1024))
+  end
+
+  -- Append total size to the string
+  analyzed_files_as_string = "# A total of " .. total_size_str .. analyzed_files_as_string
+
   return analyzed_files_as_string
 end
 
