@@ -76,7 +76,7 @@ function aiconfig.listScannedFiles()
   end
 
   -- Append total size to the string
-  analyzed_files_as_string = "# A total of " .. total_size_str .. analyzed_files_as_string
+  analyzed_files_as_string = "\n# A total of " .. total_size_str .. analyzed_files_as_string
 
   return analyzed_files_as_string
 end
