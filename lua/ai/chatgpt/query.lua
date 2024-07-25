@@ -42,7 +42,7 @@ function query.askCallback(res, opts)
 end
 
 function query.askHeavy(instruction, prompt, opts, api_key)
-  local url = 'http://localhost:3000/chatgpt'
+  local url = 'http://172.16.76.1:3000/chatgpt'
   curl.get(url..'/clear', {callback = function(res)  end})
   local project_context = aiconfig.listFilesFromConfig()
   local messages = {}
