@@ -11,6 +11,11 @@ function aiconfig.findConfig()
   end
 end
 
+function aiconfig.getProjectRoot()
+  local project_root = vim.fn.getcwd()
+  return project_root
+end
+
 function aiconfig.listFilesFromConfig()
   local config = aiconfig.findConfig()
   if config == "" then
@@ -45,10 +50,10 @@ function aiconfig.listScannedFiles()
   local analyzed_files_as_array = aiconfig.listFilesFromConfig()
   
   if #analyzed_files_as_array == 0 then
-    return "# No files to analyze."
+    return "# No files to analyze under project root " .. aiconfig.getProjectRoot()
   end
 
-  local analyzed_files_as_string = " will be analyzed:\n"
+  local analyzed_files_as_string = " will be analyzed under project root ".. aiconfig.getProjectRoot() .. ":\n"
   local total_size = 0 -- Initialize total size
 
   for _, file in ipairs(analyzed_files_as_array) do
