@@ -43,7 +43,7 @@ end
 
 function query.askHeavy(instruction, prompt, opts, api_key, agent_host)
   local url = agent_host .. '/chatgpt'
-  curl.get(url..'/clear', {callback = function(res)  end})
+  curl.get(url..'/clear', {callback = function(res) res:close() end})
   local project_context = aiconfig.listFilesFromConfig()
   local messages = {}
   table.insert(messages, {messages={ role = 'system', content = instruction }})
@@ -69,6 +69,7 @@ function query.askHeavy(instruction, prompt, opts, api_key, agent_host)
         },
         body = body,
         callback = function(res)
+          res:close()
           if i == #messages then
             vim.schedule(function() query.askCallback(res, opts) end)
           end
